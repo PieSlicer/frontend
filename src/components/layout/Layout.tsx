@@ -7,7 +7,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     <>
       <Header/>
       <main>
-        <div className='min-h-screen md:m-8'>
+        <div className='min-h-screen md:m-10'>
           {children}
         </div>
       </main>
