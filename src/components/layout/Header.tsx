@@ -42,10 +42,7 @@ export default function Header() {
   };
 
   function isActive(href: string) {
-    if (href === "/") {
-      return router.pathname === href;
-    }
-    return router.pathname.indexOf(href) !== -1;
+    return router.pathname === href;
   }
 
   return (

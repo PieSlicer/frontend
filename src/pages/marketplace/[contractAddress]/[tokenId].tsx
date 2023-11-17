@@ -1,11 +1,12 @@
 import { use } from 'react';
 import { useRouter } from 'next/router';
 import Image from "next/image";
+import Link from 'next/link';
 
 import { NFT } from '@/interfaces';
 import { useNFTMetadata } from '@/hooks/nft';
 import Layout from "@/components/layout/Layout";
-import { Spinner, Profile } from '@ensdomains/thorin';
+import { Spinner, Profile, LeftArrowSVG } from '@ensdomains/thorin';
 import Logo from 'public/logo.jpeg';
 
 
@@ -14,6 +15,15 @@ const TokenPage = () => {
   const { contractAddress, tokenId } = router.query;
 
   const { metadata: nft, loading, owners } = useNFTMetadata({ contractAddress, tokenId });
+
+  const Ariane = () => {
+    return (
+      <div className="flex items-center space-x-2 my-10">
+        <Link href="/marketplace"> <LeftArrowSVG/> </Link>
+        <span>Marketplace / {nft?.collection?.name} / {nft?.name}</span>
+      </div>
+    )
+  }
 
   if (loading) {
     return (
@@ -27,6 +37,7 @@ const TokenPage = () => {
 
   return (
     <Layout>
+      <Ariane />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-14">
         <div>
           <Image width={200} height={200} src={nft?.image?.cachedUrl ? nft?.image?.cachedUrl : Logo} className="mb-3 h-full w-2/3 mx-auto" alt="NFT image"/>
