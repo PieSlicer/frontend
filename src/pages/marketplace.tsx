@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import Layout from "../components/layout/Layout";
 
-import { useCollectionNFTs } from "@/hooks/nft";
 import { useNFTFiles } from "@/hooks/contract";
 import MarketplaceGrid from "@/components/marketplace/MarketplaceGrid";
 
@@ -17,6 +16,7 @@ export default function Marketplace() {
 
   const [contractAddress, setContractAddress] = useState<string>();
   const [error, setError] = useState<any>(undefined);
+  const [loading, setLoading] = useState<boolean>(true);
   const [toastState, setToastState] = useState<boolean>(false);
 
   const rootCid = process.env.NEXT_PUBLIC_SLICER_CID as string; //TODO: query from contract
@@ -33,14 +33,14 @@ export default function Marketplace() {
         setError('No NFT contract found');
         setToastState(true);
       }
+      setLoading(false);
    },
    onError(error) {
       setError(error.message);
       setToastState(true);
+      setLoading(false);
    }
   })
-
-  const { nfts: mintedNFTs, loading } = useCollectionNFTs({contractAddress: contractAddress as string});
 
   return (
     <Layout>
@@ -49,7 +49,7 @@ export default function Marketplace() {
           <div className="flex justify-center items-center h-96">
             <Spinner size="large" />
           </div>
-        ) : <MarketplaceGrid nfts={nfts as any[]} />
+        ) : <MarketplaceGrid nfts={nfts as any[]} contractAddress={contractAddress as string} />
       }
       <Toast
         description={error}

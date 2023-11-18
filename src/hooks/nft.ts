@@ -3,6 +3,17 @@ import { alchemy } from "../lib/alchemy";
 import { NFT } from "@/interfaces";
 import { getNFTMetadata } from "@/hooks/contract";
 
+export const fetchOwner = async (contractAddress: string, tokenId: string ) => {
+  let owners: any[] = [];
+  try {
+    const response = await alchemy.nft.getOwnersForNft(contractAddress, tokenId);
+    owners = response.owners;
+  } catch (error) {
+    console.log(error);
+  }
+  return owners;
+}
+
 export const useCollectionNFTs = ({ contractAddress } : { contractAddress: string }) => {
   const [nfts, setNFTs] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -38,9 +49,15 @@ export const useNFTMetadata = ({
 
   useEffect(() => {
     if (!cid || !tokenId || typeof(contractAddress) !== 'string' || typeof(tokenId) !== 'string' ) return;
-    fetchMetadata(cid, tokenId);
-    fetchOwner(contractAddress, tokenId);
+    init();
   }, [contractAddress, tokenId, cid]);
+
+  async function init() {
+    if (!cid || !tokenId || typeof(contractAddress) !== 'string' || typeof(tokenId) !== 'string' ) return;
+    fetchMetadata(cid, tokenId);
+    const owners = await fetchOwner(contractAddress, tokenId);
+    setOwners(owners);
+  }
 
   const fetchMetadata = async (cid: string, tokenId: string ) => {
     setLoading(true);
@@ -48,18 +65,6 @@ export const useNFTMetadata = ({
     setMetadata(response);
     setLoading(false);
   };
-
-  const fetchOwner = async (contractAddress: string, tokenId: string ) => {
-    setLoading(true);
-    try {
-      const response = await alchemy.nft.getOwnersForNft(contractAddress, tokenId);
-      setOwners(response.owners);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  }
 
   return { metadata, loading, owners };
 }
