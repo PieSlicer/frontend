@@ -57,12 +57,12 @@ export default function Header() {
           <Navbar.Collapse>
             {
               MENU_ITEMS.map((item, index) => (
-                <Navbar.Link key={index} href={item.href} active={isActive(item.href)}>
+                <Link key={index} href={item.href} className={isActive(item.href) ? "bg-secondary md:bg-transparent md:text-secondary text-lg" : "text-lg"}>
                   {item.name}
-                </Navbar.Link>
+                </Link>
               ))
             }
-            <div className='mt-[-10px]'>
+            <div className='md:mt-[-10px]'>
               <ConnectButton />
             </div>
           </Navbar.Collapse>

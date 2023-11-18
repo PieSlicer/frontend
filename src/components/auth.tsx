@@ -2,24 +2,31 @@ import { createContext, useContext, useState, useEffect, ReactNode, useMemo } fr
 import { ethers } from "ethers";
 
 import initWeb3Auth from "@/lib/web3auth";
+import useNounsPicture from '@/hooks/profilePicture';
 
 export interface AuthContextProps {
+  loading: boolean;
   isConnected: boolean;
   provider: any;
   eoa: string | null;
   smartWallet: string | null;
   email: string | null | undefined;
+  picture: string | undefined;
   signInWithWeb3Auth: () => void;
   signOutWithWeb3Auth: () => void;
 }
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [loading, setLoading] = useState<boolean>(true);
   const [web3Auth, setWeb3Auth] = useState<any>(null);
   const [provider, setProvider] = useState<any>(null);
   const [eoa, setEoa] = useState<any>(null);
   const [smartWallet, setSmartWallet] = useState<any>(null);
   const [email, setEmail] = useState<string | undefined>(undefined);
+  const [picture, setPicture] = useState<string | undefined>(undefined);
+
+  const newPofilePicture  = useNounsPicture();
 
   const isConnected = useMemo(() => !!eoa, [eoa]);
 
@@ -27,7 +34,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     init();
   }, []);
 
+  useEffect(() => {
+    if (eoa && !picture && newPofilePicture) {
+      setPicture(`data:image/svg+xml,${encodeURIComponent(newPofilePicture)}`);
+    }
+  } , [newPofilePicture, eoa, picture]);
+
   async function init() {
+    setLoading(true);
     let _web3Auth = web3Auth;
     if (!_web3Auth) {
       _web3Auth = await initWeb3Auth();
@@ -44,12 +58,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (eoa) {
         setEoa(eoa);
       }
+      afterSignIn();
+    }
+    setLoading(false);
+  }
+
+  function afterSignIn() {
+    if (newPofilePicture) {
+      setPicture(`data:image/svg+xml,${encodeURIComponent(newPofilePicture)}`);
     }
   }
 
-  function signOut() {
+  function afterSignOut() {
     setEoa(null);
     setSmartWallet(null);
+    setEmail(undefined);
+    setPicture(undefined);
   }
 
   async function signInWithWeb3Auth() {
@@ -63,12 +87,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (userInfo) {
       setEmail(userInfo.email);
     }
+    afterSignIn();
   }
 
   function signOutWithWeb3Auth() {
     if (!web3Auth) return;
     web3Auth.signOut();
-    signOut();
+    afterSignOut();
   }
 
   async function getAccount() {
@@ -86,8 +111,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const value = useMemo(() => ({
-    provider, eoa, smartWallet, email, isConnected
-  }), [provider, eoa, smartWallet, email, isConnected]);
+    loading, provider, eoa, smartWallet, email, picture, isConnected
+  }), [loading, provider, eoa, smartWallet, email, isConnected]);
 
   return (
     <AuthContext.Provider value={{...value, signInWithWeb3Auth, signOutWithWeb3Auth }}>
