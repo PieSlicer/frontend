@@ -1,19 +1,20 @@
 import React from 'react';
 import { Button, Profile, DotGridSVG, ExitSVG } from '@ensdomains/thorin';
 
-import { useAuth } from '@/components/auth';
+import { Connector, useConnect, useAccount, useDisconnect } from "wagmi";
+
 import { nounsURL } from '@/hooks/profilePicture';
-import { Spinner } from  '@ensdomains/thorin';
 
 export default function ConnectButton() {
-  const { isConnected, loading, smartWallet, eoa, email, picture, signInWithWeb3Auth, signOutWithWeb3Auth } = useAuth();
+  const { connect, connectors, error } = useConnect();
+  const { address, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
+  const connector = connectors[0] as Connector;
 
   const UserProfile = () => {
-    const address = email || smartWallet || eoa as string;
     return <Profile
-    address={address}
-    indicatorColor={smartWallet ? "red" : "blue"}
-    avatar={picture || nounsURL}
+    address={address?.toString() as string}
+    avatar={nounsURL}
     dropdownItems={[
       {
         label: 'Dashboard',
@@ -23,7 +24,7 @@ export default function ConnectButton() {
       },
       {
         label: 'Disconnect',
-        onClick: () => signOutWithWeb3Auth(),
+        onClick: () => disconnect(),
         color: 'red',
         icon: <ExitSVG />,
       },
@@ -31,16 +32,14 @@ export default function ConnectButton() {
     />
   }
 
-  if (loading) {
-    return  <Spinner />
-  }
-
   return (
     <>
       {
-        isConnected && (smartWallet || eoa) ?
+        isConnected && (address) ?
         <UserProfile /> : 
-        <Button onClick={signInWithWeb3Auth}> Sign In </Button>
+        <Button onClick={() => {
+          connect({ connector });
+        }}> Sign In </Button>
       }
     </>
   );

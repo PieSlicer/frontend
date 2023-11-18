@@ -3,15 +3,37 @@ import type { AppProps } from 'next/app';
 import { ThemeProvider } from 'styled-components';
 import { ThorinGlobalStyles, lightTheme } from '@ensdomains/thorin';
 
-import { AuthProvider } from '@/components/auth';
+import { WagmiConfig, createConfig, configureChains } from "wagmi";
+import Web3AuthConnectorInstance from "@/lib/web3auth";
+import { sepolia, gnosis } from 'wagmi/chains';
+import { publicProvider } from "wagmi/providers/public";
+
+// Setup chain
+const currentChain = process.env.NEXT_PUBLIC_MODE === 'production' ? gnosis : sepolia;
+const { chains, publicClient, webSocketPublicClient } = configureChains(
+  [currentChain],
+  [
+    publicProvider()
+  ]
+);
+
+// Set up client
+const config = createConfig({
+  autoConnect: true,
+  connectors: [
+    Web3AuthConnectorInstance(chains) as any,
+  ],
+  publicClient,
+  webSocketPublicClient,
+});
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={lightTheme}>
       <ThorinGlobalStyles />
-        <AuthProvider>
+        <WagmiConfig config={config}>
           <Component {...pageProps} />
-        </AuthProvider>
+        </WagmiConfig>
     </ThemeProvider>
   );
 }

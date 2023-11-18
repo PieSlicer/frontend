@@ -1,73 +1,48 @@
-import { Web3AuthModalPack, Web3AuthConfig } from '@safe-global/auth-kit';
-import { Web3AuthOptions } from '@web3auth/modal';
-import { OpenloginAdapter } from '@web3auth/openlogin-adapter';
+import { Web3AuthConnector } from "@web3auth/web3auth-wagmi-connector";
+import { Web3Auth } from "@web3auth/modal";
+import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
+import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
+import { CHAIN_NAMESPACES, } from "@web3auth/base";
+import { Chain } from "wagmi";
 
-import { CHAIN_NAMESPACES, CustomChainConfig } from "@web3auth/base";
-
-export const CHAIN_CONFIG = {
-  mainnet: {
+export function initWeb3authInstance(chains: Chain[]) {
+  // Create Web3Auth Instance
+  const iconUrl = "https://web3auth.io/docs/contents/logo-ethereum.png";
+  const chainConfig = {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
-    chainId: "0x1", // Please use 0x1 for Mainnet
-    rpcTarget: "https://rpc.ankr.com/eth",
-    displayName: "Ethereum Mainnet",
-    blockExplorer: "https://etherscan.io/",
-    ticker: "ETH",
-    tickerName: "Ethereum",
-  } as CustomChainConfig,
-  sepolia: {
-    chainNamespace: CHAIN_NAMESPACES.EIP155,
-    chainId: "0x2a", // Please use 0x2a for Sepolia
-    rpcTarget: "https://rpc.ankr.com/eth",
-    displayName: "Sepolia",
-    blockExplorer: "https://etherscan.io/",
-    ticker: "ETH",
-    tickerName: "Ethereum",
-  } as CustomChainConfig,
-  gnosis: {
-    chainNamespace: CHAIN_NAMESPACES.EIP155,
-    chainId: "0x2a", // Please use 0x2a for Gnosis
-    rpcTarget: "https://rpc.ankr.com/eth",
-    displayName: "Gnosis",
-    blockExplorer: "https://etherscan.io/",
-    ticker: "ETH",
-    tickerName: "Ethereum",
-  } as CustomChainConfig,
+    chainId: "0x" + chains[0].id.toString(16),
+    rpcTarget: chains[0].rpcUrls.default.http[0], // This is the public RPC we have added, please pass on your own endpoint while creating an app
+    displayName: chains[0].name,
+    tickerName: chains[0].nativeCurrency?.name,
+    ticker: chains[0].nativeCurrency?.symbol,
+    blockExplorer: chains[0].blockExplorers?.default.url[0] as string,
+  };
 
-} as const;
+  const web3AuthInstance = new Web3Auth({
+    clientId: process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID as string,
+    chainConfig,
+    web3AuthNetwork: 'sapphire_devnet',
+    enableLogging: true,
+  });
 
-const options: Web3AuthOptions = {
-  clientId: process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID as string,
-  web3AuthNetwork: "testnet",
-  chainConfig: CHAIN_CONFIG['sepolia'],
-  uiConfig: {
-    loginMethodsOrder: ['google']
-  }
-};
+  // Add openlogin adapter for customisations
+  const privateKeyProvider = new EthereumPrivateKeyProvider({ config: { chainConfig } });
+  const openloginAdapterInstance = new OpenloginAdapter({
+    privateKeyProvider,
+    adapterSettings: {
+      uxMode: "redirect",
+    },
+  });
+  web3AuthInstance.configureAdapter(openloginAdapterInstance);
+  return web3AuthInstance;
+}
 
-// https://web3auth.io/docs/sdk/pnp/web/modal/initialize#configuring-adapters
-const modalConfig = {
-};
-
-// https://web3auth.io/docs/sdk/pnp/web/modal/whitelabel#whitelabeling-while-modal-initialization
-const openloginAdapter = new OpenloginAdapter({
-  loginSettings: {
-    mfaLevel: 'none'
+export default function Web3AuthConnectorInstance(chains: Chain[]) {
+const web3AuthInstance = initWeb3authInstance(chains);
+return new Web3AuthConnector({
+  chains: chains as any,
+  options: {
+    web3AuthInstance,
   },
-  adapterSettings: {
-    uxMode: 'popup',
-    whiteLabel: {
-      name: 'Safe'
-    }
-  }
 });
-
-const web3AuthConfig: Web3AuthConfig = {
-  txServiceUrl: 'https://safe-transaction-goerli.safe.global'
-};
-const web3AuthModalPack = new Web3AuthModalPack(web3AuthConfig);
-
-// Instantiate and initialize the pack
-export default async function initWeb3Auth() {
-  await web3AuthModalPack.init({ options, adapters: [openloginAdapter], modalConfig });
-  return web3AuthModalPack;
 }
