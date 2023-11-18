@@ -39,3 +39,12 @@ export interface NFT {
   tokenType: string;
   tokenUri: string;
 }
+
+export interface NFTMetadata {
+  name: string;
+  description: string;
+  image: string;
+  collection: string;
+  address: string;
+  tokenId: string;
+}

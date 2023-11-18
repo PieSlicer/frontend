@@ -7,7 +7,7 @@ import treasuryABI from '@/abis/treasury.json';
 import { formatSCAddress } from '@/utils/scUtils';
 import { useContractBalance } from "@/hooks/contract";
 
-import { Toast, Button, Card, Typography, Heading, CountdownCircle } from '@ensdomains/thorin'
+import { Toast, Button, Card, Typography, Heading, CountdownCircle } from '@ensdomains/thorin';
 
 
 export default function Treasury() {

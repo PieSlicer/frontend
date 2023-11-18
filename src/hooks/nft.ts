@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { alchemy } from "../lib/alchemy";
 import { NFT } from "@/interfaces";
+import { getNFTMetadata } from "@/hooks/contract";
 
 export const useCollectionNFTs = ({ contractAddress } : { contractAddress: string }) => {
   const [nfts, setNFTs] = useState<any[]>([]);
@@ -21,29 +22,43 @@ export const useCollectionNFTs = ({ contractAddress } : { contractAddress: strin
   return { nfts, loading };
 }
 
-export const useNFTMetadata = ({ contractAddress, tokenId }: { contractAddress: string | string[] | undefined, tokenId: string | string[] | undefined }) => {
+export const useNFTMetadata = ({
+  cid,
+  contractAddress,
+  tokenId
+  } :
+  {
+    cid: string,
+    contractAddress: string | string[] | undefined,
+    tokenId: string | string[] | undefined
+  }) => {
   const [metadata, setMetadata] = useState<any>({});
   const [owners, setOwners] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!contractAddress || !tokenId || typeof(contractAddress) !== 'string' || typeof(tokenId) !== 'string' ) return;
-    fetchMetadata(contractAddress, tokenId);
+    if (!cid || !tokenId || typeof(contractAddress) !== 'string' || typeof(tokenId) !== 'string' ) return;
+    fetchMetadata(cid, tokenId);
     fetchOwner(contractAddress, tokenId);
-  }, [contractAddress, tokenId]);
+  }, [contractAddress, tokenId, cid]);
 
-  const fetchMetadata = async (contractAddress: string, tokenId: string ) => {
+  const fetchMetadata = async (cid: string, tokenId: string ) => {
     setLoading(true);
-    const response = await alchemy.nft.getNftMetadata(contractAddress, tokenId);
+    const response = await getNFTMetadata(`${tokenId}.json`, cid, contractAddress as string);
     setMetadata(response);
     setLoading(false);
   };
 
   const fetchOwner = async (contractAddress: string, tokenId: string ) => {
     setLoading(true);
-    const response = await alchemy.nft.getOwnersForNft(contractAddress, tokenId);
-    setOwners(response.owners);
-    setLoading(false);
+    try {
+      const response = await alchemy.nft.getOwnersForNft(contractAddress, tokenId);
+      setOwners(response.owners);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   }
 
   return { metadata, loading, owners };
