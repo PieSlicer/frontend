@@ -3,8 +3,8 @@ import { useRouter } from 'next/router';
 import Image from "next/image";
 import Link from 'next/link';
 
-import { NFT } from '@/interfaces';
 import { useNFTMetadata } from '@/hooks/nft';
+import { nounsURL } from '@/hooks/profilePicture';
 import Layout from "@/components/layout/Layout";
 import { Spinner, Profile, LeftArrowSVG } from '@ensdomains/thorin';
 import Logo from 'public/logo.jpeg';
@@ -53,7 +53,7 @@ const TokenPage = () => {
                 owners?.map((owner, index) => {
                   return (
                     <span key={index}>
-                      <Profile address={owner}></Profile>
+                      <Profile address={owner} avatar={nounsURL}></Profile>
                     </span>
                   )
                 })
