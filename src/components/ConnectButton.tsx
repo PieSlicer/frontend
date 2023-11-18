@@ -35,7 +35,7 @@ export default function ConnectButton() {
   return (
     <>
       {
-        isConnected && (address) ?
+        (isConnected && address) ?
         <UserProfile /> : 
         <Button onClick={() => {
           connect({ connector });

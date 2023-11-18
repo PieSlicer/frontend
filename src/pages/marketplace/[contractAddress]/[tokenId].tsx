@@ -15,14 +15,12 @@ import { nounsURL } from '@/hooks/profilePicture';
 import Layout from "@/components/layout/Layout";
 import { Spinner, Profile, LeftArrowSVG, Button, Banner } from '@ensdomains/thorin';
 import Logo from 'public/logo.jpeg';
-import { useAuth } from '@/components/auth';
 
 
 const TokenPage = () => {
   const router = useRouter();
   const rootCid = process.env.NEXT_PUBLIC_SLICER_CID as string; //TODO: query from contract
   const { contractAddress, tokenId } = router.query;
-  //const { isConnected } = useAuth();
   const { isConnected } = useAccount();
 
 
