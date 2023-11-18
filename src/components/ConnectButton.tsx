@@ -4,11 +4,12 @@ import { Button, Profile, DotGridSVG, ExitSVG } from '@ensdomains/thorin';
 import { useAuth } from '@/components/auth';
 
 export default function ConnectButton() {
-  const { isConnected, smartWallet, eoa, signInWithWeb3Auth, signOutWithWeb3Auth } = useAuth();
+  const { isConnected, smartWallet, eoa, email, signInWithWeb3Auth, signOutWithWeb3Auth } = useAuth();
 
   const UserProfile = () => {
+    const address = email || smartWallet || eoa as string;
     return <Profile
-    address={smartWallet || eoa}
+    address={address}
     indicatorColor={smartWallet ? "red" : "blue"}
     dropdownItems={[
       {

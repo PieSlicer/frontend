@@ -6,7 +6,8 @@ export interface AuthContextProps {
   isConnected: boolean;
   provider: any;
   eoa: string | null;
-  smartWallet: any;
+  smartWallet: string | null;
+  email: string | null;
   signInWithWeb3Auth: () => void;
   signOutWithWeb3Auth: () => void;
 }
@@ -17,6 +18,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [provider, setProvider] = useState<any>(null);
   const [eoa, setEoa] = useState<any>(null);
   const [smartWallet, setSmartWallet] = useState<any>(null);
+  const [email, setEmail] = useState<string | null>(null);
 
   const isConnected = useMemo(() => !!eoa, [eoa]);
 
@@ -41,10 +43,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const authKitSignData = await web3Auth.signIn();
     if (!authKitSignData) return;
     const { eoa, safes } = authKitSignData;
-    console.log('eoa', eoa);
-    console.log('safes', safes);
     setEoa(eoa);
     setSmartWallet(safes[0]);
+    const userInfo = await web3Auth.getUserInfo();
+    if (userInfo) {
+      setEmail(userInfo.email);
+    }
   }
 
   function signOutWithWeb3Auth() {
@@ -53,7 +57,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     signOut();
   }
 
-  const value = useMemo(() => ({ provider, eoa, smartWallet, isConnected }), [ provider, eoa, smartWallet, isConnected]);
+  const value = useMemo(() => ({
+    provider, eoa, smartWallet, email, isConnected
+  }), [provider, eoa, smartWallet, email, isConnected]);
 
   return (
     <AuthContext.Provider value={{...value, signInWithWeb3Auth, signOutWithWeb3Auth }}>
