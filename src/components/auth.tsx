@@ -4,6 +4,11 @@ import { ethers } from "ethers";
 import initWeb3Auth from "@/lib/web3auth";
 import useNounsPicture from '@/hooks/profilePicture';
 
+import { WagmiConfig, createConfig, configureChains } from 'wagmi';
+import { Web3AuthConnector } from "@web3auth/web3auth-wagmi-connector";
+import { sepolia, mainnet } from 'wagmi/chains';
+import { publicProvider } from "wagmi/providers/public";
+
 export interface AuthContextProps {
   loading: boolean;
   isConnected: boolean;
@@ -110,13 +115,38 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
+  const currentChain = sepolia;
+  const { chains, publicClient, webSocketPublicClient } = configureChains(
+    [currentChain],
+    [
+      publicProvider()
+    ]
+  );
+
+  // Set up wagmi client
+  const wagmiClient = createConfig({
+    autoConnect: true,
+    connectors: [
+      new Web3AuthConnector({
+        chains,
+        options: {
+          web3AuthInstance: web3Auth,
+        },
+      }),
+    ],
+    publicClient,
+    webSocketPublicClient,
+  });
+
   const value = useMemo(() => ({
     loading, provider, eoa, smartWallet, email, picture, isConnected
   }), [loading, provider, eoa, smartWallet, email, isConnected]);
 
   return (
     <AuthContext.Provider value={{...value, signInWithWeb3Auth, signOutWithWeb3Auth }}>
-      {children}
+      <WagmiConfig config={wagmiClient}>
+          {children}
+      </WagmiConfig>
     </AuthContext.Provider>
   );
 };

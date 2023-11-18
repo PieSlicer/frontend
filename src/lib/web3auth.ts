@@ -37,10 +37,9 @@ export const CHAIN_CONFIG = {
 
 const options: Web3AuthOptions = {
   clientId: process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID as string,
-  web3AuthNetwork: "testnet",  // TODO: change to ETH_SEPOLIA when smart contract is deployed
-  chainConfig: CHAIN_CONFIG['mainnet'], // TODO: change to CHAIN_CONFIG['sepolia'] when smart contract is deployed
+  web3AuthNetwork: "testnet",
+  chainConfig: CHAIN_CONFIG['sepolia'],
   uiConfig: {
-    theme: 'dark',
     loginMethodsOrder: ['google']
   }
 };
