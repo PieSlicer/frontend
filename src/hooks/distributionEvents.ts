@@ -12,9 +12,9 @@ export const useDistributionEvents = () => {
 
   const fetchDistributionEvents = async () => {
     setLoading(true);
-    const response = await fetch(process.env.MULTIBASS_EVENT_QUERY_REQUEST, {
+    const response = await fetch(process.env.NEXT_PUBLIC_MULTIBASS_EVENT_QUERY_REQUEST as string, {
       headers: {
-        Authorization: 'Bearer ' + process.env.MULTIBASS_TOKEN
+        Authorization: 'Bearer ' + process.env.NEXT_PUBLIC_MULTIBASS_TOKEN
 
       }
     });

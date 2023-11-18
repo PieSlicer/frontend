@@ -6,6 +6,7 @@ import pieSlicerABI from '@/abis/slicerabi.json';
 import treasuryABI from '@/abis/treasury.json';
 import { formatSCAddress } from '@/utils/scUtils';
 import { useContractBalance } from "@/hooks/contract";
+import { useDistributionEvents } from "@/hooks/distributionEvents";
 
 import { Toast, Button, Card, Typography, Heading, CountdownCircle } from '@ensdomains/thorin';
 
@@ -19,6 +20,7 @@ export default function Treasury() {
   const [secondsUntilDistribution, setSecondsUntilDistribution] = useState<number>(0);
   const [error, setError] = useState<any>(undefined);
   const [toastState, setToastState] = useState<boolean>(false);
+  const { distributionEvents, loading: loadingEvents } = useDistributionEvents();
 
   const {balance, loading} = useContractBalance({contractAddress: treasuryAddress});
 
