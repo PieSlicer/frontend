@@ -15,7 +15,6 @@ export const useDistributionEvents = () => {
     const response = await fetch(process.env.NEXT_PUBLIC_MULTIBASS_EVENT_QUERY_REQUEST as string, {
       headers: {
         Authorization: 'Bearer ' + process.env.NEXT_PUBLIC_MULTIBASS_TOKEN
-
       }
     });
     const data = await response.json();
