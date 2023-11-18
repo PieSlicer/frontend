@@ -1,13 +1,14 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
-import initWeb3Auth from "@/lib/web3auth";
+import { ethers } from "ethers";
 
+import initWeb3Auth from "@/lib/web3auth";
 
 export interface AuthContextProps {
   isConnected: boolean;
   provider: any;
   eoa: string | null;
   smartWallet: string | null;
-  email: string | null;
+  email: string | null | undefined;
   signInWithWeb3Auth: () => void;
   signOutWithWeb3Auth: () => void;
 }
@@ -18,7 +19,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [provider, setProvider] = useState<any>(null);
   const [eoa, setEoa] = useState<any>(null);
   const [smartWallet, setSmartWallet] = useState<any>(null);
-  const [email, setEmail] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | undefined>(undefined);
 
   const isConnected = useMemo(() => !!eoa, [eoa]);
 
@@ -27,10 +28,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   async function init() {
-    const web3Auth = await initWeb3Auth();
-    if (!web3Auth) return;
-    setWeb3Auth(web3Auth);
-    setProvider(web3Auth?.getProvider());
+    let _web3Auth = web3Auth;
+    if (!_web3Auth) {
+      _web3Auth = await initWeb3Auth();
+      setWeb3Auth(_web3Auth);
+    }
+    // Connected user
+    if (_web3Auth.getProvider()) {
+      setProvider(_web3Auth?.getProvider());
+      const userInfo = await _web3Auth.getUserInfo();
+      if (userInfo) {
+        setEmail(userInfo.email);
+      }
+      const eoa = await getAccount();
+      if (eoa) {
+        setEoa(eoa);
+      }
+    }
   }
 
   function signOut() {
@@ -55,6 +69,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!web3Auth) return;
     web3Auth.signOut();
     signOut();
+  }
+
+  async function getAccount() {
+    try {
+      const ethersProvider = new  ethers.providers.Web3Provider(provider)
+      const signer = ethersProvider.getSigner();
+
+      // Get user's Ethereum public address
+      const address = await signer.getAddress();
+
+      return address;
+    } catch (error) {
+      return error;
+    }
   }
 
   const value = useMemo(() => ({
