@@ -5,7 +5,8 @@ import Image from 'next/image';
 import { useRouter } from "next/router";
 import Logo from 'public/logo.jpeg';
 
-import { Navbar, Button, CustomFlowbiteTheme, Flowbite } from 'flowbite-react';
+import { Navbar, CustomFlowbiteTheme, Flowbite } from 'flowbite-react';
+import ConnectButton from '@/components/ConnectButton';
 
 const MENU_ITEMS = [
   {
@@ -21,7 +22,6 @@ const MENU_ITEMS = [
     href: "/treasury",
   },
 ]
-
 
 export default function Header() {
   const router = useRouter();
@@ -62,6 +62,9 @@ export default function Header() {
                 </Navbar.Link>
               ))
             }
+            <div className='mt-[-10px]'>
+              <ConnectButton />
+            </div>
           </Navbar.Collapse>
         </Navbar>
       </Flowbite>

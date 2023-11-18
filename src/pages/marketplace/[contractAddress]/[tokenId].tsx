@@ -50,9 +50,9 @@ const TokenPage = () => {
             <div className="flex items-center space-x-2">
               <span className="text-lg font-bold text-navy-700">Owned by:</span>
               {
-                owners?.map((owner) => {
+                owners?.map((owner, index) => {
                   return (
-                    <span>
+                    <span key={index}>
                       <Profile address={owner}></Profile>
                     </span>
                   )
