@@ -45,7 +45,6 @@ export default function Treasury() {
     },
     onError(error) {
       setError(error.message);
-      setToastState(true);
     },
   });
 
@@ -58,7 +57,6 @@ export default function Treasury() {
     },
     onError(error) {
       setError(error.message);
-      setToastState(true);
     },
   });
 
@@ -71,7 +69,6 @@ export default function Treasury() {
     },
     onError(error) {
       setError(error.message);
-      setToastState(true);
     },
   });
 
@@ -96,7 +93,6 @@ export default function Treasury() {
     },
     onError(error) {
       setError(error.message);
-      setToastState(true);
     },
   });
 
