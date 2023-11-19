@@ -24,6 +24,7 @@ export default function NFTCard( { nft } : {nft : NFTMetadata}) {
   const { data, isError, isLoading } = useEnsName({
     address: formatSCAddress(owner)
   })
+
   return (
       <>
         <div className="flex flex-col justify-center items-center">

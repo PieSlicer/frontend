@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Button, Profile, DotGridSVG, ExitSVG, WalletSVG } from '@ensdomains/thorin';
 
-import { Connector, useConnect, useAccount, useDisconnect } from "wagmi";
+import { Connector, useConnect, useAccount, useDisconnect, useEnsName } from "wagmi";
+
 import { fetchBalance } from '@wagmi/core';
 import { formatSCAddress } from '@/utils/scUtils';
 
@@ -27,10 +28,15 @@ export default function ConnectButton() {
     setBalance(balance.formatted.slice(0, 4));
   }
 
+  const { data: ens } = useEnsName({
+    address: formatSCAddress(address)
+  })
+
   const UserProfile = () => {
     return <Profile
     address={address?.toString() as string}
     avatar={nounsURL}
+    ensName={ens || undefined}
     dropdownItems={[
       {
         label: `${balance} ETH`,

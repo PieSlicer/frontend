@@ -33,10 +33,6 @@ export default function Header() {
       },
       link: {
         base: "block py-2 pr-4 pl-3 md:p-0 text-lg",
-        /* active: {
-          "on": "bg-secondary md:bg-transparent md:text-secondary",
-          "off": "border-b border-gray-100 text-white hover:bg-gray-50 md:border-0 md:hover:bg-transparent md:hover:text-secondary"
-        } */
       }
     }
   };

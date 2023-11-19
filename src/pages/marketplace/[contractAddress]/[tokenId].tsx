@@ -4,12 +4,11 @@ import Image from "next/image";
 import Link from 'next/link';
 
 import { useNFTMetadata } from "@/hooks/nft";
-import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from 'wagmi';
+import { usePrepareContractWrite, useContractWrite, useWaitForTransaction, useEnsName, useAccount } from 'wagmi';
+
 import { formatSCAddress } from '@/utils/scUtils';
 import NFTABI from '@/abis/psnft.json';
 import { parseEther } from 'viem';
-import { useAccount } from "wagmi";
-
 
 import { nounsURL } from '@/hooks/profilePicture';
 import Layout from "@/components/layout/Layout";
@@ -23,9 +22,11 @@ const TokenPage = () => {
   const { contractAddress, tokenId } = router.query;
   const { isConnected } = useAccount();
 
-
   const { metadata: nft, loading, owners } = useNFTMetadata({ cid: rootCid, tokenId, contractAddress });
   const imageUrl = (nft && nft?.image) ? nft?.image?.replace('ipfs://', 'https://ipfs.io/ipfs/') : '';
+  const { data: ens } = useEnsName({
+    address: formatSCAddress(owners[0])
+  })
 
   const Ariane = () => {
     return (
@@ -105,7 +106,7 @@ const TokenPage = () => {
                 owners?.map((owner, index) => {
                   return (
                     <span key={index}>
-                      <Profile address={owner} avatar={nounsURL}></Profile>
+                      <Profile address={owner} avatar={nounsURL} ensName={ens || undefined}></Profile>
                     </span>
                   )
                 })
