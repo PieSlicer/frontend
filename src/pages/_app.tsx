@@ -6,14 +6,15 @@ import { ThorinGlobalStyles, lightTheme } from '@ensdomains/thorin';
 import { WagmiConfig, createConfig, configureChains } from "wagmi";
 import Web3AuthConnectorInstance from "@/lib/web3auth";
 import { sepolia, gnosis } from 'wagmi/chains';
-import { publicProvider } from "wagmi/providers/public";
+import { alchemyProvider } from '@wagmi/core/providers/alchemy';
+ 
 
 // Setup chain
 const currentChain = process.env.NEXT_PUBLIC_MODE === 'production' ? gnosis : sepolia;
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [currentChain],
   [
-    publicProvider()
+    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || '' }),
   ]
 );
 
