@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 import Image from "next/image";
 import Link from 'next/link';
@@ -12,7 +13,7 @@ import { parseEther } from 'viem';
 
 import { nounsURL } from '@/hooks/profilePicture';
 import Layout from "@/components/layout/Layout";
-import { Spinner, Profile, LeftArrowSVG, Button, Banner } from '@ensdomains/thorin';
+import { Spinner, Profile, LeftArrowSVG, Button, Banner, Toast } from '@ensdomains/thorin';
 import Logo from 'public/logo.jpeg';
 
 
@@ -21,6 +22,7 @@ const TokenPage = () => {
   const rootCid = process.env.NEXT_PUBLIC_SLICER_CID as string; //TODO: query from contract
   const { contractAddress, tokenId } = router.query;
   const { isConnected } = useAccount();
+  const [toastState, setToastState] = useState(false);
 
   const { metadata: nft, loading, owners } = useNFTMetadata({ cid: rootCid, tokenId, contractAddress });
   const imageUrl = (nft && nft?.image) ? nft?.image?.replace('ipfs://', 'https://ipfs.io/ipfs/') : '';
@@ -55,6 +57,10 @@ const TokenPage = () => {
  
   const { isLoading, isSuccess } = useWaitForTransaction({
     hash: data?.hash,
+    onSuccess() {
+      console.log('onSuccess useWaitForTransaction')
+      setToastState(true);
+    }
   })
 
   const BuyButton = () => {
@@ -66,14 +72,6 @@ const TokenPage = () => {
         <Button disabled={!write || isLoading} onClick={() => write()}>
           {isLoading ? 'Minting...' : 'Mint'}
         </Button>
-        {isSuccess && (
-          <div>
-            Successfully minted your NFT!
-            <div>
-              <a href={`https://sepolia.etherscan.io/tx/${data?.hash}`}>Etherscan</a>
-            </div>
-          </div>
-        )}
       </div>
     )
   }
@@ -128,6 +126,14 @@ const TokenPage = () => {
           }
         </div>
       </div>
+      <Toast
+        description="You have successfully minted your NFT!"
+        open={toastState}
+        title="Congratulations!"
+        variant="desktop"
+        onClose={() => setToastState(false)}
+      >
+      </Toast>
     </Layout>
   );
 };
