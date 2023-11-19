@@ -68,3 +68,22 @@ export const useNFTMetadata = ({
 
   return { metadata, loading, owners };
 }
+
+export function useUserNFT({ address }: { address: string }) {
+  const [nfts, setNFTs] = useState<any[]>();
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!address) return;
+    fetchNFT(address);
+  }, [address]);
+
+  const fetchNFT = async (address: string) => {
+    setLoading(true);
+    const response = await alchemy.nft.getNftsForOwner(address);
+    setNFTs(response.ownedNfts);
+    setLoading(false);
+  };
+
+  return { nfts, loading };
+}

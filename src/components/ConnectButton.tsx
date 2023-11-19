@@ -27,8 +27,13 @@ export default function ConnectButton() {
     setBalance(balance.formatted.slice(0, 4));
   }
 
+  function redirectToUserPage() {
+    window.location.href = '/user';
+  }
+
   const UserProfile = () => {
-    return <Profile
+    return (
+    <Profile
     address={address?.toString() as string}
     avatar={nounsURL}
     dropdownItems={[
@@ -38,7 +43,7 @@ export default function ConnectButton() {
       },
       {
         label: 'Dashboard',
-        onClick: () => null,
+        onClick: () => redirectToUserPage(),
         icon: <DotGridSVG />,
         showIndicator: true,
       },
@@ -50,6 +55,7 @@ export default function ConnectButton() {
       },
     ]}
     />
+    )
   }
 
   return (
