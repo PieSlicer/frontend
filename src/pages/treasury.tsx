@@ -17,6 +17,8 @@ import {
   Typography,
   Heading,
   CountdownCircle,
+  RecordItem,
+  FlameSVG
 } from "@ensdomains/thorin";
 
 export default function Treasury() {
@@ -118,7 +120,7 @@ useState<number>(0);
   return (
     <Layout>
       <div className="space-y-8 my-10 w-fit mx-auto">
-        <Heading className="text-3xl">Pie Slicer DAO</Heading>
+        <Heading className="text-3xl">Pie Slicer DAO </Heading>
         <Typography>
           This treasury exists for Pie Slicer DAO to allocate resources to
           support public goods, and redistribute profits to all the holders
@@ -127,7 +129,10 @@ useState<number>(0);
       <div>
         <div className="flex justify-center">
           <Card className="w-3/4">
-            <Heading>Treasury</Heading>
+            <div className="flex space-x-4">
+              <Heading>Treasury</Heading>
+              <RecordItem icon={<FlameSVG />} inline value="treasury.pieslicer.ens" className="w-fit"> treasury.pieslicer.ens</RecordItem>
+            </div>
             <div className="flex justify-between">
               <div className="space-4 flex flex-col items-center">
                 <Typography>Balance:</Typography>
