@@ -13,8 +13,8 @@ export const useContractBalance = ({ contractAddress } : { contractAddress: stri
 
   const fetchBalance = async (address: string) => {
     setLoading(true);
-    const response = await alchemy.core.getBalance(address);
-    setBalance(response.toString());
+    let response = await alchemy.core.getBalance(address);
+    setBalance( (Number(response) / 10 ** 18).toString());
     setLoading(false);
   };
 
