@@ -1,7 +1,8 @@
 import { useState } from "react";
 import Layout from "../components/layout/Layout";
 
-import { useContractRead } from "wagmi";
+import { useContractRead, useAccount} from "wagmi";
+
 import pieSlicerABI from "@/abis/slicerabi.json";
 import treasuryABI from "@/abis/treasury.json";
 import { formatSCAddress } from "@/utils/scUtils";
@@ -26,15 +27,20 @@ export default function Treasury() {
   const [nbHolders, setNbHolders] = useState<number>();
   const [nbNFTsSold, setNbNFTsSold] = useState<number>();
   const [secondsUntilDistribution, setSecondsUntilDistribution] =
-    useState<number>(0);
+useState<number>(0);
   const [error, setError] = useState<any>(undefined);
   const [toastState, setToastState] = useState<boolean>(false);
   const { distributionEvents, loading: loadingEvents } =
     useDistributionEvents();
+  const [nextUserReward, setNextUserReward] = useState<string>();
+
+  const { address, isConnected } = useAccount();
 
   const { balance, loading } = useContractBalance({
     contractAddress: treasuryAddress,
   });
+
+  /* distributionTreasury.getRewardPerHolder(address holder) returns rewards per holder as of the current moment */
 
   useContractRead({
     address: formatSCAddress(process.env.NEXT_PUBLIC_SLICER_ADDRESS),
@@ -96,6 +102,19 @@ export default function Treasury() {
     },
   });
 
+  useContractRead({
+    address: formatSCAddress(treasuryAddress),
+    abi: treasuryABI.abi,
+    functionName: "getRewardPerHolder",
+    args: [formatSCAddress(address)],
+    async onSuccess(data) {
+      setNextUserReward((Number(data) / 10 ** 18).toString().slice(0, 8));
+    },
+    onError(error) {
+      setError(error.message);
+    },
+  });
+
   return (
     <Layout>
       <div className="space-y-8 my-10 w-fit mx-auto">
@@ -132,6 +151,14 @@ export default function Treasury() {
               </div>
             </div>
           </Card>
+          <Card className="">
+              <Heading>Reward</Heading>
+              <div className="space-4 flex flex-col items-center">
+
+                <Typography>Your next reward:</Typography>
+                <Typography>{nextUserReward} ETH</Typography>
+              </div>
+            </Card>
         </div>
 
         <div className="flex justify-center space-y-8 my-10 w-fit mx-auto">
