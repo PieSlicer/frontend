@@ -6,9 +6,8 @@ export const useDistributionEvents = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!distributionEvents) return;
     fetchDistributionEvents();
-  }, [distributionEvents]);
+  }, []);
 
   const fetchDistributionEvents = async () => {
     setLoading(true);
