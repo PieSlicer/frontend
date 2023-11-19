@@ -32,7 +32,7 @@ export default function NFTCard( { nft } : {nft : NFTMetadata}) {
                 <div className="h-full w-full">
                     <div className="relative w-full">
                         <Link href={`/marketplace/${nft.address}/${nft.tokenId}`}>
-                          <Image width={100} height={100} src={imageUrl || '/logo.jpeg'} className="mb-3 h-full w-full rounded-xl 3xl:h-full 3xl:w-full" alt=""/>
+                          <Image width={100} height={100} src={imageUrl || '/logo.png'} className="mb-3 h-full w-full rounded-xl 3xl:h-full 3xl:w-full" alt=""/>
                         </Link>
                     </div>
                     <div className="mb-3 flex items-center justify-between px-1 md:items-start">

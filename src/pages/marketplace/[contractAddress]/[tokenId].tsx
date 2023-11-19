@@ -14,7 +14,7 @@ import { parseEther } from 'viem';
 import { nounsURL } from '@/hooks/profilePicture';
 import Layout from "@/components/layout/Layout";
 import { Spinner, Profile, LeftArrowSVG, Button, Banner, Toast } from '@ensdomains/thorin';
-import Logo from 'public/logo.jpeg';
+import Logo from 'public/logo.png';
 
 
 const TokenPage = () => {

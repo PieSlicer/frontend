@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from "next/router";
-import Logo from 'public/logo.jpeg';
+import Logo from 'public/logo.png';
 
 import { Navbar, CustomFlowbiteTheme, Flowbite } from 'flowbite-react';
 import ConnectButton from '@/components/ConnectButton';
