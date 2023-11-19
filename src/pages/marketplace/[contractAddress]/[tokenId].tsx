@@ -11,7 +11,7 @@ import { formatSCAddress } from '@/utils/scUtils';
 import NFTABI from '@/abis/psnft.json';
 import { parseEther } from 'viem';
 
-import { nounsURL } from '@/hooks/profilePicture';
+import CustomProfile from "@/components/CustomProfile";
 import Layout from "@/components/layout/Layout";
 import { Spinner, Profile, LeftArrowSVG, Button, Banner, Toast } from '@ensdomains/thorin';
 import Logo from 'public/logo.png';
@@ -104,7 +104,7 @@ const TokenPage = () => {
                 owners?.map((owner, index) => {
                   return (
                     <span key={index}>
-                      <Profile address={owner} avatar={nounsURL} ensName={ens || undefined}></Profile>
+                      <CustomProfile address={owner} />
                     </span>
                   )
                 })
