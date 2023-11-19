@@ -7,6 +7,7 @@ import pieSlicerABI from "@/abis/slicerabi.json";
 import treasuryABI from "@/abis/treasury.json";
 import { formatSCAddress } from "@/utils/scUtils";
 import { useContractBalance } from "@/hooks/contract";
+import { useUserNFTs } from "@/hooks/nft";
 import { useDistributionEvents } from "@/hooks/distributionEvents";
 import { Table } from "flowbite-react";
 
@@ -37,12 +38,13 @@ useState<number>(0);
   const [nextUserReward, setNextUserReward] = useState<string>();
 
   const { address, isConnected } = useAccount();
+  const { nfts } = useUserNFTs({
+    address: formatSCAddress(address),
+  });
 
   const { balance, loading } = useContractBalance({
     contractAddress: treasuryAddress,
   });
-
-  /* distributionTreasury.getRewardPerHolder(address holder) returns rewards per holder as of the current moment */
 
   useContractRead({
     address: formatSCAddress(process.env.NEXT_PUBLIC_SLICER_ADDRESS),
@@ -159,8 +161,9 @@ useState<number>(0);
           <Card className="">
               <Heading>Reward</Heading>
               <div className="space-4 flex flex-col items-center">
-
-                <Typography>Your next reward:</Typography>
+                <Typography>You own:</Typography>
+                <Typography>{nfts ? nfts?.length : 0 } NFT(s)</Typography>
+                <Typography className="mt-5">Your next reward:</Typography>
                 <Typography>{nextUserReward} ETH</Typography>
               </div>
             </Card>

@@ -3,6 +3,25 @@ import { alchemy } from "../lib/alchemy";
 import { NFT } from "@/interfaces";
 import { getNFTMetadata } from "@/hooks/contract";
 
+export const useUserNFTs = ({ address } : { address: string }) => {
+  const [nfts, setNFTs] = useState<any[]>();
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!address) return;
+    fetchNFT(address);
+  }, [address]);
+
+  const fetchNFT = async (address: string) => {
+    setLoading(true);
+    const response = await alchemy.nft.getNftsForOwner(address);
+    setNFTs(response.ownedNfts);
+    setLoading(false);
+  };
+
+  return { nfts, loading };
+}
+
 export const fetchOwner = async (contractAddress: string, tokenId: string ) => {
   let owners: any[] = [];
   try {
