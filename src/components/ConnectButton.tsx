@@ -43,12 +43,6 @@ export default function ConnectButton() {
         icon: <WalletSVG />,
       },
       {
-        label: 'Dashboard',
-        onClick: () => null,
-        icon: <DotGridSVG />,
-        showIndicator: true,
-      },
-      {
         label: 'Disconnect',
         onClick: () => disconnect(),
         color: 'red',

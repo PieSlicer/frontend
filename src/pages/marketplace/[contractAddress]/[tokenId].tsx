@@ -33,7 +33,7 @@ const TokenPage = () => {
   const Ariane = () => {
     return (
       <div className="flex items-center space-x-2 my-10">
-        <Link href="/marketplace"> <LeftArrowSVG/> </Link>
+        <Link href="/"> <LeftArrowSVG/> </Link>
         <span>Marketplace / {nft?.collection} / {nft?.name}</span>
       </div>
     )

@@ -12,11 +12,7 @@ export default function CustomFooter() {
           <Footer.Copyright href="/" by="Pie Slicer" year={2023} />
           <div className="mt-4 flex space-x-12 sm:mt-0 sm:justify-center">
             <Footer.Title title='Fund Treasury @ treasury.pieslicer.ens'></Footer.Title>
-            <Footer.Icon href="#" icon={BsFacebook} />
-            <Footer.Icon href="#" icon={BsInstagram} />
-            <Footer.Icon href="#" icon={BsTwitter} />
-            <Footer.Icon href="#" icon={BsGithub} />
-            <Footer.Icon href="#" icon={BsDribbble} />
+            <Footer.Icon href="https://github.com/PieSlicer/smart-contracts" icon={BsGithub} />
           </div>
         </div>
       </div>

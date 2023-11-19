@@ -10,12 +10,8 @@ import ConnectButton from '@/components/ConnectButton';
 
 const MENU_ITEMS = [
   {
-    name: "Home",
-    href: "/"
-  },
-  {
     name: "Marketplace",
-    href: "/marketplace",
+    href: "/",
   },
   {
     name: "Treasury",
