@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { formatSCAddress } from '@/utils/scUtils';
 
+import { useEnsName } from 'wagmi';
 import { NFTMetadata } from "@/interfaces";
 import { Card, Profile, Button } from '@ensdomains/thorin';
 import { fetchOwner } from "@/hooks/nft";
@@ -10,6 +12,7 @@ import { nounsURL } from "@/hooks/profilePicture";
 export default function NFTCard( { nft } : {nft : NFTMetadata}) {
   const imageUrl = nft?.image?.replace('ipfs://', 'https://ipfs.io/ipfs/') || '';
   const [owner, setOwner] = useState<string>();
+
   useEffect(() => {
     async function init() {
         const owners = await fetchOwner(nft.address, nft.tokenId);
@@ -17,6 +20,10 @@ export default function NFTCard( { nft } : {nft : NFTMetadata}) {
     }
     init();
   }, [nft]);
+
+  const { data, isError, isLoading } = useEnsName({
+    address: formatSCAddress(owner)
+  })
   return (
       <>
         <div className="flex flex-col justify-center items-center">
@@ -38,7 +45,7 @@ export default function NFTCard( { nft } : {nft : NFTMetadata}) {
                             <div className="flex items-center space-x-2">
                                 {
                                     owner ?
-                                    <Profile address={owner} avatar={nounsURL}></Profile>
+                                    <Profile address={owner} avatar={nounsURL} ensName={data || undefined}></Profile>
                                     :
                                     <Link href={`/marketplace/${nft.address}/${nft.tokenId}`}  className="w-full">
                                         <Button  className="w-full">Buy</Button>

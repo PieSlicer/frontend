@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { alchemy } from "../lib/alchemy";
 
 export const useDistributionEvents = () => {
   const [distributionEvents, setDistributionEvents] = useState<any[]>([]);
