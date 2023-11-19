@@ -70,7 +70,7 @@ const TokenPage = () => {
     return (
       <div>
         <Button disabled={!write || isLoading} onClick={() => write()}>
-          {isLoading ? 'Minting...' : 'Mint'}
+          {isLoading ? 'Minting...' : 'Mint (0.001 ETH)'}
         </Button>
       </div>
     )
